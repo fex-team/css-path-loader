@@ -20,7 +20,7 @@ require('./index.scss') // less 或者 scss
 {
     test: /\.(scss|less)/,
     exclude: /node_modules/,
-    loaders: ['style', 'css', 'autoprefixer', 'sass', 'less', css-path-loader']
+    loaders: ['style', 'css', 'autoprefixer', 'sass', 'less', 'css-path-loader']
 }
 
 
