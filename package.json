@@ -1,6 +1,6 @@
 {
   "name": "css-path-loader",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "auto add path namespace for every component",
   "main": "index.js",
   "scripts": {
