@@ -8,7 +8,7 @@ css 模块化工具
 
 scss 文件或者 less 文件必须和 react 组件文件必须放置在同一目录下,
 
-如果项目中有通用样式文件, 请使用 `@import` 来引入而不是在 `js` 使用 `require` 
+如果项目中有通用样式文件, 请在 webpack 配置 entry 文件中使用 require 引入或者在其他文件中使用 `@import` 来引入而不是在某个模块的js文件中使用 `require` 
 
 如果样式和组件是`完全分开`放置请不要使用这个 loader,  
 
