@@ -1,34 +1,38 @@
 css-path-loader
 ====================
-React 组件 css 命名空间生成器
+css 模块化工具
 
-注: 此插件需要 less 或者 scss 作为 css 预编译器
-此插件需要和 [html-path-loader] 配合使用才能发挥作用
+通过为每个 react 组件生成唯一的 className 值来实现 css 组件化
 
+此loader需要和 [html-path-loader](https://github.com/andycall/html-path-loader.git) 配合使用才能发挥作用
+
+scss 文件或者 less 文件必须和 react 组件文件必须放置在同一目录下, 样式和组件文档分开放置请不要使用这个 loader
 
 ## Usage
 
-假设一个 react 组件在项目的路径为 `src/components/test/index.js`
-index.js的相同目录下还有个 `index.scss`
+自动根据每一个 react 组件所在的路径, 在编译期间, 将该组件 require 的所有scss或者 less 代码代码包上一个
+
+
+```css
+    
+    // 假设这个 react 组件根据当前项目所在的相对路径为`src/component/test/index.js`, 自动根据路径生成 class 名
+    .src-component-test {
+    
+        // react 组件引入的样式文件源码
+        ... 
+    }
+   
+```
+
+有了这个 loader 自动根据每个组件的文件所在路径生成 class 名称, 配合html-path-loader 会生成相同的 class 名称, 从而实现 css 模块化 
+
+## Config
 
 ```javascript
-// 在 index.js
-require('./index.scss') // less 或者 scss
-
-// webpack.config
-         
 {
     test: /\.(scss|less)/,
     exclude: /node_modules/,
-    loaders: ['style', 'css', 'autoprefixer', 'sass', 'less', 'css-path-loader']
+    loaders: ['css-path-loader']
 }
-
 
 ```
-index.scss 里面的代码都会自动根据当前文件的父级文件夹路径生成一个唯一的命名空间(前提是保证一个文件夹一个组件)
-会自动生成
-.src-component-test {
-    // code from index.scss
-}
-
-从而保证该组件所在文件夹内部引入的 css 代码都在其相应的命名空间内
