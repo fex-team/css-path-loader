@@ -49,4 +49,4 @@ scss 文件或者 less 文件必须和 react 组件文件必须放置在同一�
 + 如果项目中有通用样式文件, 请在 webpack 配置 entry 文件中使用 require 引入或者在其他文件中使用 `@import` 来引入而不是在某个模块的js文件中使用 `require` 
 + 如果项目中需要通用样式文件, 推荐在每一个组件的样式文件中通过@import 引入(支持编辑器提示)
 + 引入全局样式文件只需在 webpack.js 中定义的 entry 文件中通过 require 引入即可
-+ 除了 webpack 定义的 entry 文件, 其他 js|jsx 文件都不要用 require 加载*非当前目录*下的 scss|less 文件!!
++ 除了 webpack 定义的 entry 文件, 其他 js和jsx 文件都不要用 require 加载*非当前目录*下的 scss和less 文件!!
