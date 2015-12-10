@@ -13,8 +13,13 @@ module.exports = function (source, map) {
     if (Object.prototype.toString.call(this.options.entry) === '[object Array]') {
         for (var value of this.options.entry) {
             if (/[a-zA-Z-\.\/]+(js|jsx)$/.test(value)) {
-                var entryPath = path.resolve(this.options.context + '/' + value)
-                if (entryPath.replace(/\.(js|jsx)/, '') === this.resourcePath.replace(/\.(less|scss)/, '')) {
+                var entryPath = path.resolve(this.options.context + '/' + value).split('/')
+                var resourcePath = this.resourcePath.split('/')
+
+                entryPath.pop()
+                resourcePath.pop()
+
+                if (entryPath.join('/') === resourcePath.join('/')) {
                     this.callback(null, source, map)
                     return false;
                 }
