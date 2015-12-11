@@ -1,5 +1,63 @@
 css-path-loader
 ====================
+webpack loader to write React with module css.
+
+> generate unique className for every React component based on directory path.
+
+To let module css work, you should use [html-path-loader](https://github.com/fex-team/html-path-loader.git) is the mean time.
+
+## Note
+
+your style files (scss or less) and your react files should in the same directory.
+
++-- home
+|   +-- home.jsx
+|   +-- home.scss
++-- about
+|   +-- about.jsx
+|   +-- about.scss
+
+If you decide to separate all the styles file and your react files in different directory, this loader is not good choice.
+
+
+## Usage
+
+Based on every react component's path, in the precompile moment, wrap every style files with a name 
+
+
+```css
+    
+    // Assume this scss files relative path from this project is `src/component/test/index.js`, then the className is `.src-component-test`
+    .src-component-test {
+    
+        // the original code from scss file
+        ...
+    }
+   
+```
+
+the [html-path-loader](https://github.com/fex-team/html-path-loader.git) will generate the same className for every components and every style files. And the react css module could be work.
+
+
+## Config
+
+```javascript
+ module: {
+            loaders: [
+                {
+                    test: /\.(scss|less)/,
+                    loaders: ['css-path-loader']
+                }
+            ]
+        }
+```
+
+## Tips
++ If you use `require` to require a css file from `node_modules`, this loader will ignore it
++ If you need to add global css file, please use `require` in your entry js file
++ Except entry file, do not use `require` to load a file that is from other directory(node_modules ), use @import
+
+
 css 模块化工具
 
 通过为每个 react 组件生成唯一的 className 值来实现 css 组件化
