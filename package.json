@@ -20,8 +20,5 @@
   "bugs": {
     "url": "https://github.com/fex-team/css-path-loader/issues"
   },
-  "homepage": "https://github.com/fex-team/css-path-loader#readme",
-  "dependencies": {
-    "html-path-loader": "^0.1.10"
-  }
+  "homepage": "https://github.com/fex-team/css-path-loader#readme"
 }
