@@ -1,7 +1,65 @@
 var path = require('path')
 
+function removeComments(css) {
+    return css.replace(/\/\*(\r|\n|.)*\*\//g,"")
+}
+
+function removeSpace (css) {
+    return css.replace(/\s+/g, '')
+}
+
+
+function parseCss(css) {
+    var rules = {}
+    var index = css.indexOf('._global')
+    var globalIndex
+    var globalEnd
+    var needClose = true
+
+    if (index === -1) return
+
+    for (var i in css) {
+        if (i < index) continue
+
+        if (globalIndex && globalEnd) break
+
+        var pol = css[i]
+
+        if (pol === '{' && !globalIndex) {
+            globalIndex = parseInt(i, 10) + 1
+        }
+        else if (pol === '}' && !needClose && !globalEnd) {
+            globalEnd = parseInt(i, 10)
+        }
+        else if (pol === '{' && globalIndex) {
+            needClose = true
+        }
+        else if (pol === '}' && needClose) {
+            needClose = false
+        }
+    }
+
+    console.log(globalIndex, globalEnd)
+
+    if (!globalIndex || !globalEnd) {
+        return null
+    }
+    else {
+        return {
+            content: css.substring(globalIndex, globalEnd),
+            index: globalIndex,
+            end: globalEnd
+        }
+    }
+}
+
+
 module.exports = function (source, map) {
     this.cacheable && this.cacheable()
+
+    var global = parseCss(source)
+    console.log(global)
+    var hasGlobal = !!global
 
     // 对于 node_modules 里面的文件不能做处理
     if (/node_modules/.test(this.resourcePath)) {
@@ -40,7 +98,10 @@ module.exports = function (source, map) {
     nameArray.pop()
     var nameStr = nameArray.join('-')
 
-    if (nameStr) {
+    if (nameStr && hasGlobal) {
+        source = global.content + '.' + nameStr + '{' + source.substring(0, global.index) + source.substring(global.end) + '}'
+    }
+    else if (nameStr && !hasGlobal) {
         source = '.' + nameStr + '{' + source + '}'
     }
 
