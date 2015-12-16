@@ -39,8 +39,6 @@ function parseCss(css) {
         }
     }
 
-    console.log(globalIndex, globalEnd)
-
     if (!globalIndex || !globalEnd) {
         return null
     }
@@ -58,7 +56,6 @@ module.exports = function (source, map) {
     this.cacheable && this.cacheable()
 
     var global = parseCss(source)
-    console.log(global)
     var hasGlobal = !!global
 
     // 对于 node_modules 里面的文件不能做处理
