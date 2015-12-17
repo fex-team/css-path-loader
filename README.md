@@ -10,12 +10,14 @@ To let module css work, you should use [html-path-loader](https://github.com/fex
 
 your style files (scss or less) and your react files should in the same directory.
 
+```
 +-- home
 |   +-- home.jsx
 |   +-- home.scss
 +-- about
 |   +-- about.jsx
 |   +-- about.scss
+```
 
 If you decide to separate all the styles file and your react files in different directory, this loader is not good choice.
 
@@ -111,7 +113,6 @@ scss 文件或者 less 文件必须和 react 组件文件必须放置在同一�
 
 + 在js文件中通过 `require` 引入 `npm` 安装的 `css` 文件, 会直接加到全局域中, 和通常 `webpack` 引入没什么区别
 + 如果在 `scss` 或者 `less` 文件中通过 `@import` 引入 `node_modules` 里或者其他地方的 `scss` 或者 `less` 文件, 都只会作用于当前组件, 所有的样式的作用域也都属于当前组件
-+ 如果项目中有通用样式文件, 请在 webpack 配置 entry 文件中使用 require 引入或者在其他文件中使用 `@import` 来引入而不是在某个模块的js文件中使用 `require`
-+ 如果项目中需要通用样式文件, 推荐在每一个组件的样式文件中通过@import 引入(支持编辑器提示)
-+ 引入全局样式文件只需在 webpack.js 中定义的 entry 文件中通过 require 引入即可
++ 如果需要在单个模块中覆盖全局的样式文件, 使用._global 类包装即可
++ 全局引入样式文件只需在 webpack.js 中定义的 entry 文件中通过 require 引入即可
 + 除了 webpack 定义的 entry 文件, 其他 js和jsx 文件都不要用 require 加载*非当前目录*下的 scss和less 文件!!
