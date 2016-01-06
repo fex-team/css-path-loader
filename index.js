@@ -14,7 +14,7 @@ function parseCss(css) {
     var index = css.indexOf('._global')
     var globalIndex
     var globalEnd
-    var needClose = true
+    var needClose = false
 
     if (index === -1) return
 
@@ -31,7 +31,7 @@ function parseCss(css) {
         else if (pol === '}' && !needClose && !globalEnd) {
             globalEnd = parseInt(i, 10)
         }
-        else if (pol === '{' && globalIndex) {
+        else if (pol === '{' && globalIndex && !needClose) {
             needClose = true
         }
         else if (pol === '}' && needClose) {
@@ -45,6 +45,7 @@ function parseCss(css) {
     else {
         return {
             content: css.substring(globalIndex, globalEnd),
+            _index: index,
             index: globalIndex,
             end: globalEnd
         }
@@ -96,7 +97,7 @@ module.exports = function (source, map) {
     var nameStr = nameArray.join('-')
 
     if (nameStr && hasGlobal) {
-        source = global.content + '.' + nameStr + '{' + source.substring(0, global.index) + source.substring(global.end) + '}'
+        source = global.content + '\n .' + nameStr + '{' + source.substring(0, global._index) + source.substring(global.end + 1) + '}'
     }
     else if (nameStr && !hasGlobal) {
         source = '.' + nameStr + '{' + source + '}'
