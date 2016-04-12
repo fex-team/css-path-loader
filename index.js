@@ -69,13 +69,13 @@ module.exports = function (source, map) {
     if (Object.prototype.toString.call(this.options.entry) === '[object Array]') {
         for (var value of this.options.entry) {
             if (/[a-zA-Z-\.\/]+(js|jsx)$/.test(value)) {
-                var entryPath = path.resolve(this.options.context + '/' + value).split('/')
-                var resourcePath = this.resourcePath.split('/')
+                var entryPath = path.resolve(this.options.context + path.sep + value).split(path.sep)
+                var resourcePath = this.resourcePath.split(path.sep)
 
                 entryPath.pop()
                 resourcePath.pop()
 
-                if (entryPath.join('/') === resourcePath.join('/')) {
+                if (entryPath.join(path.sep) === resourcePath.join(path.sep)) {
                     this.callback(null, source, map)
                     return false;
                 }
@@ -84,16 +84,19 @@ module.exports = function (source, map) {
     }
 
     // 得到了入口文件的绝对位置
-    var entryAbsolutePath = this.options.context + '/'
+    var entryAbsolutePath = this.options.context + path.sep
 
     // 得到入口文件文件夹路径
-    var entryAbsoluteFolderPathArray = entryAbsolutePath.split('/')
+    var entryAbsoluteFolderPathArray = entryAbsolutePath.split(path.sep)
     entryAbsoluteFolderPathArray.pop()
 
-    var namespace = this.resourcePath.replace(entryAbsoluteFolderPathArray.join('/') + '/', '').replace(/\.(less|scss)/, '')
+    var namespace = this.resourcePath.replace(entryAbsoluteFolderPathArray.join(path.sep) + path.sep, '').replace(/\.(less|scss)/, '')
 
-    var nameArray = namespace.split('/')
+    var nameArray = namespace.split(path.sep)
     nameArray.pop()
+    for(var i=0; i<nameArray.length; i++) {
+        nameArray[i] = nameArray[i].replace('-' , '_')
+    }
     var nameStr = nameArray.join('-')
 
     if (nameStr && hasGlobal) {
