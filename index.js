@@ -1,110 +1,118 @@
 var path = require('path')
 
-function removeComments(css) {
-    return css.replace(/\/\*(\r|\n|.)*\*\//g,"")
-}
-
-function removeSpace (css) {
-    return css.replace(/\s+/g, '')
-}
-
-
 function parseCss(css) {
-    var rules = {}
-    var index = css.indexOf('._global')
-    var globalIndex
-    var globalEnd
-    var needClose = false
+  var start = 0;
+  var cssFragment = [];
+  var atFragment = [];
 
-    if (index === -1) return
+  for (var i in css) {
+    i = parseInt(i);
 
-    for (var i in css) {
-        if (i < index) continue
+    var rawName = css.substring(start, i);
+    var leftScore = rawName.match(/\{/g);
+    var rightScore = rawName.match(/\}/g);
 
-        if (globalIndex && globalEnd) break
-
-        var pol = css[i]
-
-        if (pol === '{' && !globalIndex) {
-            globalIndex = parseInt(i, 10) + 1
-        }
-        else if (pol === '}' && !needClose && !globalEnd) {
-            globalEnd = parseInt(i, 10)
-        }
-        else if (pol === '{' && globalIndex && !needClose) {
-            needClose = true
-        }
-        else if (pol === '}' && needClose) {
-            needClose = false
-        }
+    // 对于带有@的字符串, 匹配闭合, 修正起点
+    if (leftScore && rightScore && leftScore.length === rightScore.length) {
+      atFragment.push(rawName);
+      start = i + 1;
     }
 
-    if (!globalIndex || !globalEnd) {
-        return null
+    if (leftScore && leftScore.length > 1) {
+      continue;
     }
-    else {
-        return {
-            content: css.substring(globalIndex, globalEnd),
-            _index: index,
-            index: globalIndex,
-            end: globalEnd
-        }
+
+    if (css[i] === '}') {
+      var rawFragment = css.substring(start, i + 1);
+
+      if (rawFragment.indexOf('@') < 0) {
+        cssFragment.push(rawFragment);
+      }
+      start = i + 1;
     }
+  }
+
+  return {
+    css: cssFragment,
+    at: atFragment
+  }
 }
 
 
 module.exports = function (source, map) {
-    this.cacheable && this.cacheable()
+  this.cacheable && this.cacheable()
 
-    var global = parseCss(source)
-    var hasGlobal = !!global
-
-    // 对于 node_modules 里面的文件不能做处理
-    if (/node_modules/.test(this.resourcePath)) {
-        this.callback(null, source, map)
-        return false
-    }
-
-    // 找到入口文件绝对位置
-    if (Object.prototype.toString.call(this.options.entry) === '[object Array]') {
-        for (var value of this.options.entry) {
-            if (/[a-zA-Z-\.\/]+(js|jsx)$/.test(value)) {
-                var entryPath = path.resolve(this.options.context + path.sep + value).split(path.sep)
-                var resourcePath = this.resourcePath.split(path.sep)
-
-                entryPath.pop()
-                resourcePath.pop()
-
-                if (entryPath.join(path.sep) === resourcePath.join(path.sep)) {
-                    this.callback(null, source, map)
-                    return false;
-                }
-            }
-        }
-    }
-
-    // 得到了入口文件的绝对位置
-    var entryAbsolutePath = this.options.context + path.sep
-
-    // 得到入口文件文件夹路径
-    var entryAbsoluteFolderPathArray = entryAbsolutePath.split(path.sep)
-    entryAbsoluteFolderPathArray.pop()
-
-    var namespace = this.resourcePath.replace(entryAbsoluteFolderPathArray.join(path.sep) + path.sep, '').replace(/\.(less|scss)/, '')
-
-    var nameArray = namespace.split(path.sep)
-    nameArray.pop()
-    for(var i=0; i<nameArray.length; i++) {
-        nameArray[i] = nameArray[i].replace('-' , '_')
-    }
-    var nameStr = nameArray.join('-')
-
-    if (nameStr && hasGlobal) {
-        source = global.content + '\n .' + nameStr + '{' + source.substring(0, global._index) + source.substring(global.end + 1) + '}'
-    }
-    else if (nameStr && !hasGlobal) {
-        source = '.' + nameStr + '{' + source + '}'
-    }
-
+  // 对于 node_modules 里面的文件不能做处理
+  if (/node_modules/.test(this.resourcePath)) {
     this.callback(null, source, map)
+    return false
+  }
+
+  // 找到入口文件绝对位置
+  if (Object.prototype.toString.call(this.options.entry) === '[object Array]') {
+    for (var value of this.options.entry) {
+      if (/[a-zA-Z-\.\/]+(js|jsx)$/.test(value)) {
+        var entryPath = path.resolve(this.options.context + path.sep + value).split(path.sep)
+        var resourcePath = this.resourcePath.split(path.sep)
+
+        entryPath.pop()
+        resourcePath.pop()
+
+        if (entryPath.join(path.sep) === resourcePath.join(path.sep)) {
+          this.callback(null, source, map)
+          return false;
+        }
+      }
+    }
+  }
+
+  // // 得到了入口文件的绝对位置
+  var entryAbsolutePath = this.options.context + path.sep
+
+  // // 得到入口文件文件夹路径
+  var entryAbsoluteFolderPathArray = entryAbsolutePath.split(path.sep)
+  entryAbsoluteFolderPathArray.pop()
+
+  var namespace = this.resourcePath.replace(entryAbsoluteFolderPathArray.join(path.sep) + path.sep, '').replace(/\.(less|scss)/, '')
+
+  var nameArray = namespace.split(path.sep);
+  nameArray.pop()
+  for (var i = 0; i < nameArray.length; i++) {
+    nameArray[i] = nameArray[i].replace('-', '_');
+  }
+  var nameSpace = nameArray.join('-');
+  var nameStr = '.' + nameSpace;
+
+  var rawObj = parseCss(source);
+  var cssFragment = rawObj.css;
+  var atFragment = rawObj.at;
+  var content;
+
+  cssFragment = cssFragment.map(function (css) {
+    var globalReg = /body|html/.exec(css);
+
+    if (css.indexOf('_namespace') >= 0) {
+      css = css.replace('_namespace', nameSpace);
+    }
+    else if (globalReg) {
+      // 取到body 后面的地方
+      var bodyIndex = globalReg.index + 4;
+      var rightScoreIndex = css.indexOf('{', globalReg.index);
+      var testStr = css.substring(bodyIndex, rightScoreIndex);
+
+      // 只处理 body .container 这样的情况
+      if (!/^(body|html|(\s+)|,)+$/.test(testStr)) {
+        css = css.substring(0, bodyIndex) + ' ' + nameStr + ' ' + css.substring(bodyIndex);
+      }
+    }
+    else {
+      css = nameStr + ' ' + css;
+    }
+
+    return css;
+  });
+
+  content = atFragment.join('\n') + '\n' + cssFragment.join('\n');
+
+  this.callback(null, content, map)
 }
