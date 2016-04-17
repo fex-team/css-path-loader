@@ -94,6 +94,9 @@ module.exports = function (source, map) {
     if (css.indexOf('_namespace') >= 0) {
       css = css.replace('_namespace', nameSpace);
     }
+    else if (css.indexOf('._global') >= 0) {
+      css = css.replace('._global', '');
+    }
     else if (globalReg) {
       // 取到body 后面的地方
       var bodyIndex = globalReg.index + 4;
