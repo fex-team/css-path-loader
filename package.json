@@ -1,0 +1,87 @@
+{
+  "_args": [
+    [
+      {
+        "name": "css-path-loader",
+        "raw": "css-path-loader",
+        "rawSpec": "",
+        "scope": null,
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/baidu/baiduYun/react-ueditor"
+    ]
+  ],
+  "_from": "css-path-loader@latest",
+  "_id": "css-path-loader@1.0.1",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/css-path-loader",
+  "_nodeVersion": "5.2.0",
+  "_npmOperationalInternal": {
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/css-path-loader-1.0.1.tgz_1460885308667_0.61318358941935"
+  },
+  "_npmUser": {
+    "email": "dongtiangche@outlook.com",
+    "name": "andycall"
+  },
+  "_npmVersion": "3.5.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "css-path-loader",
+    "raw": "css-path-loader",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://registry.npmjs.org/css-path-loader/-/css-path-loader-1.0.1.tgz",
+  "_shasum": "80aaf88a0cebec77b501fb6598f408d0fb68c666",
+  "_shrinkwrap": null,
+  "_spec": "css-path-loader",
+  "_where": "/Users/baidu/baiduYun/react-ueditor",
+  "author": {
+    "name": "ascoder"
+  },
+  "bugs": {
+    "url": "https://github.com/fex-team/css-path-loader/issues"
+  },
+  "dependencies": {},
+  "description": "auto add path namespace for every component",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "80aaf88a0cebec77b501fb6598f408d0fb68c666",
+    "tarball": "https://registry.npmjs.org/css-path-loader/-/css-path-loader-1.0.1.tgz"
+  },
+  "gitHead": "f9ed4ae08a3ff46f50061a735ace99555be285c0",
+  "homepage": "https://github.com/fex-team/css-path-loader#readme",
+  "keywords": [
+    "webpack",
+    "loader"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "dongtiangche@outlook.com",
+      "name": "andycall"
+    }
+  ],
+  "name": "css-path-loader",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fex-team/css-path-loader.git"
+  },
+  "scripts": {
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
+    "test": "npm test"
+  },
+  "version": "1.0.1"
+}
