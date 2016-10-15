@@ -123,7 +123,5 @@ module.exports = function (source, map) {
 
   content = atFragment.join('\n') + '\n' + cssFragment.join('\n');
 
-  console.log(atFragment, cssFragment);
-
   this.callback(null, content, map)
 }
