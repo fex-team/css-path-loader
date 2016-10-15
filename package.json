@@ -83,5 +83,5 @@
     "patch-release": "npm version patch && npm publish && git push --follow-tags",
     "test": "npm test"
   },
-  "version": "1.0.1"
+  "version": "1.0.2"
 }
